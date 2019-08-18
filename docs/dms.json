@@ -1,0 +1,42 @@
+{
+    "models": {
+        "example": {
+            "name": "examples",
+            "table": "examples",
+            "icon": "sitemap",
+            "list_display": [
+                "uid",
+                "name",
+                "desc",
+                "active",
+                "date_created",
+                "date_updated"
+            ],
+            "search_fields": [
+                "name",
+                "desc"
+            ],
+            "readonly_fields": [
+                "uid",
+                "date_created",
+                "date_updated"
+            ],
+            "exclude": [
+                "date_created",
+                "date_updated"
+            ],
+            "ordering": [
+                "+name",
+                "date_created"
+            ],
+            "defaults": {
+                "uid": "uuid",
+                "date_created": "datetime.utcnow",
+                "date_updated": "datetime.utcnow"
+            },
+            "updates": {
+                "date_updated": "datetime.utcnow"
+            }
+        }
+    }
+}

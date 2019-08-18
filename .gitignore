@@ -1,0 +1,12 @@
+!.editorconfig
+!.gitignore
+*.egg-info*
+*.py[cod]
+.build
+.coverage
+.env
+.pytest_cache
+bin/*
+build/*
+dist/*
+.python-version

@@ -1,0 +1,18 @@
+FROM alpine:3.10
+
+ENV PROJECT_LOCATION /srv/app
+ENV PYTHONPATH $PYTHONPATH:$PROJECT_LOCATION
+
+RUN mkdir -p $PROJECT_LOCATION
+WORKDIR $PROJECT_LOCATION
+ADD . $PROJECT_LOCATION
+RUN set -ex && \
+    apk --no-cache add --virtual .dependencies gcc make linux-headers ca-certificates openssh-client musl-dev python3-dev && \
+    apk --no-cache add python3 postgresql-dev && \
+    ln -s /usr/bin/python3 /usr/bin/python && \
+    ln -s /usr/bin/pip3 /usr/bin/pip && \
+    make install && \
+    apk del .dependencies && \
+    rm -rf /tmp/* /root/.cache
+EXPOSE 8000
+ENTRYPOINT ["dms"]

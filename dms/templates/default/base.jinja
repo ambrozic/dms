@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dashboard</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ ui.font }}:300,400,700">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.5/css/bulma.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/css/bulma-extensions.min.css" />
+    <style>{% include "styles.css" %}</style>
+</head>
+
+<body class="container is-fullwidth {{ ui.page }}">
+
+    <div class="columns is-marginless is-fullheight">
+        <div id="menu" class="column is-1 is-paddingless has-background-white">
+
+            <!-- START MENU -->
+            {% block menu %}
+            {% if menu.entries %}
+            <input type="checkbox" id="menu-button">
+            <label for="menu-button" id="menu-label">
+                <span class="icon is-hoverable">
+                    <i id="menu-icon" class="fa fa-bars"></i>
+                </span>
+            </label>
+            <aside>
+                <div class="menu-title">
+                    <a class="title is-4 has-padding-x menu-toggle" href="/"></a>
+                </div>
+                <ul class="menu-items">
+                {% for item in menu.entries %}
+                    <li class="is-vertical-center">
+                        <a class="menu-link is-extended tooltip is-tooltip-right{{ " has-text-link" if item.active == True else "" }}" href="{{ item.path }}" data-tooltip="{{ item.name|capitalize }}">
+                            <span class="icon">
+                                <i class="fa fa-{{ item.icon }}"></i>
+                            </span>
+                            <span class="menu-item has-padding-x menu-toggle is-capitalized">{{ item.name }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </aside>
+            {% endif %}
+            {% endblock %}
+            <!-- END MENU -->
+
+        </div>
+        <div id="main" class="column">
+
+            <!-- START NAV -->
+            {% block nav %}
+            <nav class="navbar has-background-transparent" role="navigation" aria-label="main navigation">
+                <div class="navbar-menu">
+                    <div class="navbar-brand">
+                        <a class="navbar-item has-text-white title is-5" href="/">DASHBOARD</a>
+                    </div>
+                    <div class="navbar-end">
+                        <div class="navbar-item">
+                            <a class="icon is-medium" href="/profile/">
+                                <i id="menu-label" class="fa fa-lg fa-inverse fa-users"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="level"></div>
+            <div class="level"></div>
+            {% endblock %}
+            <!-- END NAV -->
+
+            <!-- START MAIN -->
+            {% block main %}
+            <main class="has-background-white box is-paddingless">
+                <div class="section is-medium has-text-centered">No content</div>
+            </main>
+            {% endblock %}
+            <!-- END MAIN -->
+
+            <!-- START MESSAGES -->
+            {% block messages %}
+            {% if messages %}
+            <div class="notifications">
+                {% for message in messages %}
+                    <div class="notification is-{{ message.type }}">
+                        <button class="delete"></button>
+                        <h6 class="title is-6">{{ message.text }}</h6>
+                        {% if message.content %}<p class="subtitle is-6">{{ message.content }}</p>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endblock %}
+            <!-- END MESSAGES -->
+
+            <!-- START FOOTER -->
+            {% block footer %}
+            <footer class="section has-text-centered">
+                <div class="has-text-centered">dashboard</div>
+            </footer>
+            {% endblock %}
+            <!-- END FOOTER -->
+
+            <!-- START HELP -->
+            <div id="help" class="modal">
+                <div class="modal-background"></div>
+                <div class="modal-content box">
+                    <h6 class="subtitle is-5">Keyboard shortcuts</h6>
+                    <div class="is-divider"></div>
+                    <div class="tags has-padding-y">
+                        <span class="tag is-marginless">.</span>
+                        <span class="has-padding-left">Toggle left navigation menu</span>
+                    </div>
+                    <div class="tags has-padding-y">
+                        <span class="tag is-marginless">/</span>
+                        <span class="has-padding-left">Set focus to search field</span>
+                    </div>
+                    <div class="tags has-padding-y">
+                        <span class="tag is-marginless">?</span>
+                        <span class="has-padding-left">Toggle help menu</span>
+                    </div>
+                </div>
+                <button id="help-close" class="modal-close is-large" aria-label="close"></button>
+            </div>
+            <!-- END HELP -->
+
+        </div>
+    </div>
+    <script>{% include "scripts.js" %}</script>
+</body>
+</html>

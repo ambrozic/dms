@@ -1,0 +1,171 @@
+{% extends "base.jinja" %}
+{% block main %}
+            <main class="has-background-white box is-paddingless">
+                <div class="column is-12">
+                    <div class="level is-marginless has-padding-y">
+                        <div class="level-left">
+                            <h1 class="title is-5">
+                                <a href="/{{ name }}/">{{ name|capitalize }}</a>
+                            </h1>
+                        </div>
+                        <div class="level-right">
+                            <a class="button is-link" href="+">
+                                <span>Add</span>
+                                <span class="icon is-small">
+                                    <i class="fa fa-plus"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="is-divider"></div>
+                    <div class="level is-marginless has-padding-y">
+                        <form method="get">
+                            {% for n, v in query_params.items() %}
+                            {% if n != "l" and v %}
+                            <input type="hidden" name="{{ n }}" value="{{ v }}" />
+                            {% endif %}
+                            {% endfor %}
+                            <div class="level-left">
+                                <div class="select">
+                                    <select name="l">
+                                        <option value="10"{{ " selected" if query_params.l == 10 else "" }}>10</option>
+                                        <option value="50"{{ " selected" if query_params.l == 50 else "" }}>50</option>
+                                        <option value="100"{{ " selected" if query_params.l == 100 else "" }}>100</option>
+                                        <option value="200"{{ " selected" if query_params.l == 200 else "" }}>200</option>
+                                    </select>
+                                </div>
+                                <div class="has-padding-x">per page</div>
+                                <button class="button">Go</button>
+                            </div>
+                        </form>
+                        <div class="level-right">
+                            <form class="is-pulled-right">
+                                <div class="field has-addons">
+                                    <div class="control">
+                                        <input
+                                            class="input"
+                                            type="text"
+                                            name="q"
+                                            id="search"
+                                            value="{{ query_params.q|to_empty }}"
+                                            placeholder="Search"
+                                        >
+                                    </div>
+                                    <div class="control">
+                                        <button class="button">
+                                            <span class="icon is-small">
+                                              <i class="fa fa-search"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% if results %}
+                    {% set sort = request.query_params.get("s") %}
+                    <table class="table is-striped is-hoverable is-extended">
+                        <thead class="has-background-white-ter">
+                            <tr>
+                                <th></th>
+                                {% for field in fields %}
+                                {% if results[0][field].is_list_display == True %}
+                                {% set sort_a = " active" if sort == " " + field else "" %}
+                                {% set sort_d = " active" if sort == "-" + field else "" %}
+                                <th class="has-text-grey is-sortable">
+                                    <div>
+                                        <span>{{ field.replace("_"," ").strip() }}</span>
+                                        <span class="sortable-icons">
+                                            <a class="icon{{ sort_a }}" href="?{{ query_params|qsu("s", " " + field) }}">
+                                                <i class="fa fa-sort-up"></i>
+                                            </a>
+                                            <a class="icon{{ sort_d }}" href="?{{ query_params|qsu("s", "-" + field) }}">
+                                                <i class="fa fa-sort-down"></i>
+                                            </a>
+                                        </span>
+                                    </div>
+                                </th>
+                                {% endif %}
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in results %}
+                            <tr>
+                            {% for field in fields %}
+                            {% set obj = item[field] %}
+                            {% if obj.is_primary_key == True %}
+                                <td>
+                                    <a class="icon" href="/{{ name }}/{{ obj.value }}/">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                            {% endif %}
+                            {% endfor %}
+                            {% for field in fields %}
+                            {% set obj = item[field] %}
+                            {% if obj.is_list_display == True %}
+                                <td class="{{ "has-text-centered" if obj.type == "boolean" else "" }}">
+                                    {% if not obj.is_clean %}
+                                    {{ obj.value|safe }}
+                                    {% else %}
+                                    {% if obj.type == "date" %}
+                                        {{ obj.value|to_date }}
+                                    {% elif obj.type in ["datetime", "timestamp"] %}
+                                        {{ obj.value|to_datetime }}
+                                    {% elif obj.type == "boolean" %}
+                                    <span class="icon is-small has-text-link">
+                                        <i class="fa {{ "fa-check-square-o" if obj.value == True else "fa-square-o" }}"></i>
+                                    </span>
+                                    {% else %}
+                                        {{ obj.value|to_empty }}
+                                    {% endif %}
+                                    {% endif %}
+                                </td>
+                                {% endif %}
+                            {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="column is-12">
+                        <nav class="pagination is-normal" role="navigation" aria-label="pagination">
+                            <a href="?{{ query_params|qsu("p", pagination.prev) }}" class="pagination-previous">
+                                <span class="icon is-small">
+                                    <i class="fa fa-chevron-left"></i>
+                                </span>
+                            </a>
+                            <a href="?{{ query_params|qsu("p", pagination.next) }}" class="pagination-next">
+                                <span class="icon is-small">
+                                    <i class="fa fa-chevron-right"></i>
+                                </span>
+                            </a>
+                            <ul class="pagination-list">
+                                <li>
+                                    <a href="?{{ query_params|qsu("p", 1) }}" class="pagination-link" aria-label="Goto page 1">1</a>
+                                </li>
+                                <li>
+                                    <span class="pagination-ellipsis">&hellip;</span>
+                                </li>
+                                <li>
+                                    <span class="pagination-link is-current" aria-label="Page {{ pagination.page }}" aria-current="page">
+                                        {{ pagination.page }}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span class="pagination-ellipsis">&hellip;</span>
+                                </li>
+                                <li>
+                                    <a href="?{{ query_params|qsu("p", pagination.pages) }}" class="pagination-link" aria-label="Goto page {{ pagination.pages }}">
+                                        {{ pagination.pages }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                {% else %}
+                    <div class="section is-medium has-text-centered">No content</div>
+                {% endif %}
+            </main>
+{% endblock %}

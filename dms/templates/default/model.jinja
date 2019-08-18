@@ -1,0 +1,194 @@
+{% extends "base.jinja" %}
+{% block main %}
+            <main class="has-background-white box is-paddingless">
+                <div class="column is-12">
+                    <div class="level is-marginless has-padding-y">
+                        <div class="level-left">
+                            <h1 class="title is-5">
+                                <a href="/{{ name }}/">{{ model|capitalize }}</a>
+                            </h1>
+                        </div>
+                        <div class="level-right">
+                            <a class="button is-link is-outlined" href="/{{ name }}/">
+                                <span class="is-uppercase">cancel</span>
+                                <span class="icon is-small">
+                                    <i class="fa fa-close"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="is-divider"></div>
+                    <form method="post">
+                        {% for field in fields %}
+                        <div class="columns">
+                            <div class="column is-8">
+                                {% set obj = result.get(field) if result else {} %}
+                                {% set is_valid = field not in errors %}
+                                <div class="field is-horizontal">
+                                    <div class="field-label is-normal">
+                                        <label class="label is-normal">{{ field.replace("_"," ").strip() }}</label>
+                                    </div>
+                                    <div class="field-body">
+                                        <div class="field">
+                                            {% if obj.type in ["float", "decimal", "double_precision"] %}
+                                            <div class="control has-icons-right">
+                                                <input
+                                                    class="input{{ [" is-danger", ""][is_valid] }}"
+                                                    type="number"
+                                                    step="0.01"
+                                                    name="{{ field }}"
+                                                    value="{{ obj.value }}"
+                                                    {{ ["", " disabled"][obj.is_readonly] }}
+                                                />
+                                            </div>
+                                            {% elif obj.type in ["integer", "bigint", "smallint"] %}
+                                            <div class="control has-icons-right">
+                                                <input
+                                                    class="input{{ [" is-danger", ""][is_valid] }}"
+                                                    type="number"
+                                                    step="1"
+                                                    name="{{ field }}"
+                                                    value="{{ obj.value }}"
+                                                    {{ ["", " disabled"][obj.is_readonly] }}
+                                                />
+                                            </div>
+                                            {% elif obj.type == "boolean" %}
+                                            <div class="control">
+                                                <input type="hidden" name="{{ field }}" value="0" />
+                                                <input
+                                                    class="is-checkradio{{ [" is-danger", ""][is_valid] }}"
+                                                    id="{{ field }}"
+                                                    type="checkbox"
+                                                    name="{{ field }}"
+                                                    {% if obj.value == True %} checked="checked"{% else %}{% endif %}
+                                                    {{ ["", " disabled"][obj.is_readonly] }}
+                                                />
+                                                <label class="is-paddingless" for="{{ field }}"></label>
+                                            </div>
+                                            {% elif obj.type == "date" %}
+                                            <div class="control">
+                                                <input
+                                                    class="input{{ [" is-danger", ""][is_valid] }}"
+                                                    type="date"
+                                                    placeholder="Text input"
+                                                    name="{{ field }}"
+                                                    value="{{ obj.value|to_date }}"
+                                                    {{ ["", " disabled"][obj.is_readonly] }}
+                                                />
+                                            </div>
+                                            {% elif obj.type in ["datetime", "timestamp"] %}
+                                            <div class="control">
+                                                <input
+                                                    class="input{{ [" is-danger", ""][is_valid] }}"
+                                                    type="datetime-local"
+                                                    placeholder="Text input"
+                                                    name="{{ field }}"
+                                                    value="{{ obj.value|to_datetime }}"
+                                                    {{ ["", " disabled"][obj.is_readonly] }}
+                                                />
+                                            </div>
+                                            {% elif obj.type == "choice" %}
+                                            <div class="control">
+                                                <div class="select{{ [" is-danger", ""][is_valid] }}">
+                                                    <select
+                                                        name="{{ field }}"
+                                                        {{ ["", " disabled"][obj.is_readonly] }}
+                                                    >
+                                                        <option value=""> -</option>
+                                                        {% for k,v in obj.choices %}
+                                                            <option value="{{ k }}"{{ [""," selected"][k == obj.value] }}>{{ v }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            {% elif obj.type == "array" %}
+                                            <div class="control">
+                                                <ul>
+                                                    {% for o in obj.value %}
+                                                        <li>{{ o }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            {% elif obj.type == "text" %}
+                                            <div class="control">
+                                                <textarea
+                                                    class="textarea{{ [" is-danger", ""][is_valid] }}"
+                                                    placeholder="{{ field }}"
+                                                    name="{{ field }}"
+                                                    {{ ["", " disabled"][obj.is_readonly] }}
+                                                >{{ obj.value|to_empty }}</textarea>
+                                            </div>
+                                            {% else %}
+                                            <div class="control has-icons-right">
+                                                <input
+                                                    class="input{{ [" is-danger", ""][is_valid] }}"
+                                                    type="text"
+                                                    placeholder=""
+                                                    maxlength="{{ obj.max_length|to_empty }}"
+                                                    name="{{ field }}"
+                                                    value="{{ obj.value|to_json|to_empty if obj.type == "json" else obj.value|to_empty }}"
+                                                    {{ ["", " disabled"][obj.is_readonly] }}
+                                                />
+                                                <span class="icon is-right">
+                                                    <i class="fa fa-check"></i>
+                                                </span>
+                                            </div>
+                                            {% endif %}
+                                            {% if not is_valid %}
+                                                {% for error in errors[field] %}
+                                                    <p class="help is-danger">{{ error }}</p>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-4">
+                                {#<p class="help">{{ obj }}</p>#}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="columns has-padding-bottom">
+                            <div class="column is-8">
+                                <div class="field is-horizontal">
+                                    <div class="field-label is-normal"></div>
+                                    <div class="field-body">
+                                        <div class="field is-grouped">
+                                            <button type="submit" class="button is-success">
+                                                <span class="icon">
+                                                    <i class="fa fa-check"></i>
+                                                </span>
+                                                <span>Save</span>
+                                            </button>
+                                            <span class="control is-expanded"></span>
+                                            {% if is_create == False %}
+                                            <input type="checkbox" id="delete" />
+                                            <label for="delete" class="button is-danger is-delete">
+                                                <span>Delete</span>
+                                                <span class="icon">
+                                                    <i class="fa fa-times"></i>
+                                                </span>
+                                            </label>
+                                            <label class="is-vertical-center is-hidden has-padding-x">
+                                                Delete?
+                                            </label>
+                                            <label for="delete" class="button is-white is-hidden">
+                                                <span class="icon is-small has-text-black">
+                                                    <i class="fa fa-times"></i>
+                                                </span>
+                                            </label>
+                                            <button type="submit" name="form:delete" id="btn-confirm" value="delete" class="button is-white is-hidden">
+                                                <span class="icon is-small">
+                                                    <i class="fa fa-check has-text-danger"></i>
+                                                </span>
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </main>
+{% endblock %}

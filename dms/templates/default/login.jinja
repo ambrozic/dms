@@ -1,0 +1,62 @@
+{% extends "base.jinja" %}{% block menu %}{% endblock %}{% block nav %}{% endblock %}
+        {% block main %}
+            <main class="container has-text-centered">
+                <div class="column is-4 is-offset-4">
+                    {% if is_storage %}
+                    <h3 class="title has-text-white">Login</h3>
+                    <p class="subtitle has-text-white">Please login to continue</p>
+                    {% else %}
+                    <h3 class="title has-text-white">Register</h3>
+                    <p class="subtitle has-text-white">Please create administrator account</p>
+                    {% endif %}
+                    <div class="box">
+                        <figure class="avatar">
+                            <span class="icon">
+                                <i class="fa fa-user"></i>
+                            </span>
+                        </figure>
+                        <form method="post">
+                            {% if is_storage %}
+                            <div class="field has-padding-top">
+                                <div class="control">
+                                    <input name="username" class="input is-medium" type="text" placeholder="username" autofocus/>
+                                </div>
+                            </div>
+                            <div class="field has-padding-bottom">
+                                <div class="control">
+                                    <input name="password" class="input is-medium" type="password" placeholder="password" />
+                                </div>
+                            </div>
+                            <div class="field has-padding">
+                                <label class="checkbox is-vertical-center is-center">
+                                    <input name="remember" type="checkbox"/><span class="has-padding-left">Remember me</span>
+                                </label>
+                            </div>
+                            <div class="field has-padding-top">
+                                <button class="button is-success is-medium">Login</button>
+                            </div>
+                            {% else %}
+                            <div class="field has-padding-top">
+                                <div class="control">
+                                    <input name="username" class="input is-medium" type="text" placeholder="username" value="admin"/>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="control">
+                                    <input name="password1" class="input is-medium" type="password" placeholder="password" autofocus/>
+                                </div>
+                            </div>
+                            <div class="field has-padding-bottom">
+                                <div class="control">
+                                    <input name="password2" class="input is-medium" type="password" placeholder="confirm password" />
+                                </div>
+                            </div>
+                            <div class="field has-padding-top">
+                                <button class="button is-success is-medium">Create</button>
+                            </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </main>
+        {% endblock %}
