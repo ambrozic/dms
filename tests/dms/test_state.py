@@ -60,7 +60,7 @@ async def test():
     loader = Loader(source=source)
     assert loader.config.settings == {}
     assert loader.model(name="item").name == "item"
-    assert loader.table(name="items").name == "items"
+    assert loader.table(name="item").name == "items"
     assert loader.schema(name="item").name == "item"
 
     assert "item" in loader.models()

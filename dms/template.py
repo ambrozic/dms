@@ -27,7 +27,7 @@ def to_empty(v: typing.Any):
 
 
 def to_json(v: dict):
-    return json.dumps(v) if v else None
+    return json.dumps(obj=v, indent=4, default=str) if v else None
 
 
 class Templates(Jinja2Templates):

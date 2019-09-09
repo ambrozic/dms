@@ -1,9 +1,9 @@
+VERSION:=$(shell sed -n 's/__version__ = \"\([a-zA-Z0-9\.].*\)\".*/\1/p' dms/__init__.py)
 REGISTRY:=ambrozic/dms
-RELEASE:=0.0.1
-IMAGE:=${REGISTRY}:${RELEASE}
+IMAGE:=${REGISTRY}:${VERSION}
 
-.PHONY: init install build serve test coverage docs fmt compile image publish
-.SILENT: init install build serve test coverage docs fmt compile image publish
+.PHONY: init install build serve lint test coverage docs fmt compile image publish
+.SILENT: init install build serve lint test coverage docs fmt compile image publish
 
 init: build lint test coverage
 
@@ -16,6 +16,10 @@ build:
 serve:
 	uvicorn dms.app:app --debug
 
+lint:
+	isort --check-only --recursive --line-width=90 --multi-line=3 --combine-as --trailing-comma .
+	black --check setup.py dms tests
+
 test:
 	py.test tests --verbose --capture=no
 
@@ -26,7 +30,7 @@ docs:
 	mkdocs serve
 
 fmt:
-	isort --recursive --multi-line=3 --combine-as --trailing-comma .
+	isort --recursive --line-width=90 --multi-line=3 --combine-as --trailing-comma .
 	black setup.py dms tests
 
 compile:

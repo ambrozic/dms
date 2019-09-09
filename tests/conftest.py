@@ -1,6 +1,7 @@
 import os  # isort:skip
 
 DATABASES = ["postgresql://postgres@localhost:5432/dms-test", "sqlite:///dms-test.db"]
+os.environ["DMS_TESTING"] = "1"  # isort:skip
 os.environ["DMS_DATABASE"] = DATABASES[0]  # isort:skip
 
 import pytest

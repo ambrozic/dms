@@ -20,7 +20,7 @@
             <!-- START MENU -->
             {% block menu %}
             {% if menu.entries %}
-            <input type="checkbox" id="menu-button">
+            <input type="checkbox" id="menu-button"{{ " checked" if menu.is_open == True else "" }}>
             <label for="menu-button" id="menu-label">
                 <span class="icon is-hoverable">
                     <i id="menu-icon" class="fa fa-bars"></i>
@@ -32,8 +32,8 @@
                 </div>
                 <ul class="menu-items">
                 {% for item in menu.entries %}
-                    <li class="is-vertical-center">
-                        <a class="menu-link is-extended tooltip is-tooltip-right{{ " has-text-link" if item.active == True else "" }}" href="{{ item.path }}" data-tooltip="{{ item.name|capitalize }}">
+                    <li class="is-vertical-center{{ " is-active" if item.active == True else "" }}">
+                        <a class="menu-link tooltip is-tooltip-right{{ " has-text-link" if item.active == True else "" }}" href="{{ item.path }}" data-tooltip="{{ item.name|capitalize }}">
                             <span class="icon">
                                 <i class="fa fa-{{ item.icon }}"></i>
                             </span>
@@ -60,7 +60,7 @@
                     <div class="navbar-end">
                         <div class="navbar-item">
                             <a class="icon is-medium" href="/profile/">
-                                <i id="menu-label" class="fa fa-lg fa-inverse fa-users"></i>
+                                <i class="fa fa-lg fa-inverse fa-users"></i>
                             </a>
                         </div>
                     </div>
@@ -98,7 +98,9 @@
             <!-- START FOOTER -->
             {% block footer %}
             <footer class="section has-text-centered">
-                <div class="has-text-centered">dashboard</div>
+                <div class="has-text-centered">
+                    Press <span class="tag is-white">?</span> for help
+                </div>
             </footer>
             {% endblock %}
             <!-- END FOOTER -->

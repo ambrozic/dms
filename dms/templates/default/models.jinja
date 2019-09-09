@@ -5,7 +5,7 @@
                     <div class="level is-marginless has-padding-y">
                         <div class="level-left">
                             <h1 class="title is-5">
-                                <a href="/{{ name }}/">{{ name|capitalize }}</a>
+                                <a href="/{{ name }}/">{{ model|capitalize }}</a>
                             </h1>
                         </div>
                         <div class="level-right">
@@ -65,12 +65,14 @@
                 </div>
                 {% if results %}
                     {% set sort = request.query_params.get("s") %}
+                    {% set size = (150 / fields_in_list|length)|int %}
+                    <h2 class="has-padding-y">
+                        <strong class="has-padding-left has-text-grey">{{ pagination.count }}</strong> results
+                    </h2>
                     <table class="table is-striped is-hoverable is-extended">
                         <thead class="has-background-white-ter">
                             <tr>
-                                <th></th>
-                                {% for field in fields %}
-                                {% if results[0][field].is_list_display == True %}
+                                {% for field in fields_in_list %}
                                 {% set sort_a = " active" if sort == " " + field else "" %}
                                 {% set sort_d = " active" if sort == "-" + field else "" %}
                                 <th class="has-text-grey is-sortable">
@@ -86,27 +88,16 @@
                                         </span>
                                     </div>
                                 </th>
-                                {% endif %}
                                 {% endfor %}
                             </tr>
                         </thead>
                         <tbody>
                             {% for item in results %}
-                            <tr>
-                            {% for field in fields %}
-                            {% set obj = item[field] %}
-                            {% if obj.is_primary_key == True %}
-                                <td>
-                                    <a class="icon" href="/{{ name }}/{{ obj.value }}/">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
-                                </td>
-                            {% endif %}
-                            {% endfor %}
-                            {% for field in fields %}
+                            <tr class="is-clickable" href="/{{ name }}/{{ item._pk }}/">
+                            {% for field in fields_in_list %}
                             {% set obj = item[field] %}
                             {% if obj.is_list_display == True %}
-                                <td class="{{ "has-text-centered" if obj.type == "boolean" else "" }}">
+                                <td class="{{ "has-text-centered is-narrow" if obj.type == "boolean" else "" }}">
                                     {% if not obj.is_clean %}
                                     {{ obj.value|safe }}
                                     {% else %}
@@ -119,7 +110,7 @@
                                         <i class="fa {{ "fa-check-square-o" if obj.value == True else "fa-square-o" }}"></i>
                                     </span>
                                     {% else %}
-                                        {{ obj.value|to_empty }}
+                                        {{ obj.value|to_empty|string|truncate(size, true) }}
                                     {% endif %}
                                     {% endif %}
                                 </td>
@@ -131,19 +122,21 @@
                     </table>
                     <div class="column is-12">
                         <nav class="pagination is-normal" role="navigation" aria-label="pagination">
-                            <a href="?{{ query_params|qsu("p", pagination.prev) }}" class="pagination-previous">
+                            {% set prev_disabled = " disabled" if pagination.page <= 1 else "" %}
+                            {% set next_disabled = " disabled" if pagination.page >= pagination.pages else "" %}
+                            <a href="?{{ query_params|qsu("p", pagination.prev) }}" class="pagination-previous"{{ prev_disabled }}>
                                 <span class="icon is-small">
                                     <i class="fa fa-chevron-left"></i>
                                 </span>
                             </a>
-                            <a href="?{{ query_params|qsu("p", pagination.next) }}" class="pagination-next">
+                            <a href="?{{ query_params|qsu("p", pagination.next) }}" class="pagination-next"{{ next_disabled }}>
                                 <span class="icon is-small">
                                     <i class="fa fa-chevron-right"></i>
                                 </span>
                             </a>
                             <ul class="pagination-list">
                                 <li>
-                                    <a href="?{{ query_params|qsu("p", 1) }}" class="pagination-link" aria-label="Goto page 1">1</a>
+                                    <a href="?{{ query_params|qsu("p", 1) }}" class="pagination-link" aria-label="Goto page 1"{{ prev_disabled }}>1</a>
                                 </li>
                                 <li>
                                     <span class="pagination-ellipsis">&hellip;</span>
@@ -157,7 +150,7 @@
                                     <span class="pagination-ellipsis">&hellip;</span>
                                 </li>
                                 <li>
-                                    <a href="?{{ query_params|qsu("p", pagination.pages) }}" class="pagination-link" aria-label="Goto page {{ pagination.pages }}">
+                                    <a href="?{{ query_params|qsu("p", pagination.pages) }}" class="pagination-link" aria-label="Goto page {{ pagination.pages }}"{{ next_disabled }}>
                                         {{ pagination.pages }}
                                     </a>
                                 </li>

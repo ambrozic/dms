@@ -7,14 +7,14 @@ class Schema:
     def __init__(self, name: str, meta: Meta):
         self.name: str = name
         self.meta = meta
-        self.pk = list(state.items.table(name=self.meta.table).primary_key.columns)[0]
+        self.pk = list(state.items.table(name=self.name).primary_key.columns)[0]
         self._fields = None
 
     @property
     def fields(self):
         if self._fields is None:
             self._fields = {}
-            table = state.items.table(name=self.meta.table)
+            table = state.items.table(name=self.name)
 
             for i, c in enumerate(table.columns):
                 type_ = c.type.__class__.__name__.lower()
@@ -44,6 +44,10 @@ class Schema:
                 )
 
         return self._fields
+
+    @property
+    def field_names(self):
+        return tuple(f.name for f in sorted(self.fields.values(), key=lambda o: o.pos))
 
     def __repr__(self) -> str:
         return self.__str__()

@@ -42,16 +42,8 @@ th {
   white-space: nowrap;
 }
 
-.table tbody td:first-of-type,
-.table thead th:first-of-type {
-  width: 1rem !important;
-  padding-right: 0 !important;
-  text-align: center;
-}
-
 #menu {
   width: auto;
-  flex-grow: inherit;
 }
 
 #menu-button {
@@ -71,25 +63,25 @@ th {
   z-index: 9999;
 }
 
-#menu-button:checked ~ aside {
+#menu-button:not(:checked) ~ aside {
   width: 3.5rem !important;
   z-index: 1;
 }
 
-#menu-button:checked ~ aside .menu-toggle {
+#menu-button:not(:checked) ~ aside .menu-toggle {
   display: none;
 }
 
-#menu-button:checked ~ #menu-label span #menu-icon:before {
+#menu-button:not(:checked) ~ #menu-label span #menu-icon:before {
   font-size: 1rem;
   content: "\f0c9";
 }
 
-#menu-button:not(:checked) ~ #menu-label span #menu-icon {
+#menu-button:checked ~ #menu-label span #menu-icon {
   height: 1.9rem;
 }
 
-#menu-button:not(:checked) ~ #menu-label span #menu-icon:before {
+#menu-button:checked ~ #menu-label span #menu-icon:before {
   font-size: 1.7rem;
   content: "\00d7";
 }
@@ -103,21 +95,25 @@ th {
   padding: 4rem 0;
 }
 
-.menu-items {
-  width: auto;
-  margin-left: 1rem;
-}
-
 .menu-items li {
-  padding: 0.5rem 0;
+  padding: 0.5rem 1rem;
+  border-right: 0.2rem solid transparent;
 }
 
 .menu-item {
-  margin: 0 1rem 0 0.5rem;
+  margin: 0 0.5rem;
 }
 
 #search {
   width: 20rem;
+}
+
+.is-active {
+  border-right: 0.2rem solid #23d160 !important;
+}
+
+.is-active > .menu-link {
+  color: black !important;
 }
 
 .is-hoverable {
@@ -150,6 +146,14 @@ th {
   align-items: center;
 }
 
+.is-borderless {
+  border: 0 !important;
+}
+
+.is-extended {
+  width: 100%;
+}
+
 .field-label {
   flex-grow: 1;
 }
@@ -167,7 +171,7 @@ th {
 }
 
 .has-padding-left {
-  padding-left: 0.5rem !important;
+  padding-left: 0.75rem !important;
 }
 
 .has-padding-bottom {
@@ -175,8 +179,8 @@ th {
 }
 
 .has-padding-x {
-  padding-left: 0.5rem !important;
-  padding-right: 0.5rem !important;
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
 }
 
 .has-padding-y {
@@ -186,10 +190,6 @@ th {
 
 .has-text-danger {
   color: red !important;
-}
-
-.is-extended {
-  width: 100%;
 }
 
 .has-background-transparent {
@@ -283,8 +283,9 @@ p.subtitle {
   display: inherit !important;
 }
 
-input[type="checkbox"] {
-  margin-top: 1px;
+.is-checkradio ~ label:before,
+.is-checkradio ~ label:after {
+  margin-top: 0.28rem;
 }
 
 .page-login main {

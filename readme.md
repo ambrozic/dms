@@ -38,3 +38,6 @@ services:
 ```
 
 and open `http://0.0.0.0:8000`
+
+## Screenshots
+[here](docs/ss.png)

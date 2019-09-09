@@ -23,16 +23,15 @@ class Loader:
     @property
     def config(self):
         if self._config is None:
-            source = self.source or json.load(open(settings.CONFIG))
-            self._config = Config(**source)
+            self.source = self.source or json.load(open(settings.CONFIG))
+            self._config = Config(**self.source)
         return self._config
 
     def models(self) -> typing.Dict[str, Model]:
         if self._models is None:
             logging.info("dms: loading models")
             self._models = {
-                name: Model(name=name, meta=meta)
-                for name, meta in self.config.models.items()
+                n: Model(name=n, meta=meta) for n, meta in self.config.models.items()
             }
         return self._models
 
@@ -43,8 +42,7 @@ class Loader:
         if self._schemas is None:
             logging.info("dms: loading schemas")
             self._schemas = {
-                name: Schema(name=name, meta=meta)
-                for name, meta in self.config.models.items()
+                n: Schema(name=n, meta=meta) for n, meta in self.config.models.items()
             }
         return self._schemas
 
@@ -55,7 +53,9 @@ class Loader:
         if self._tables is None:
             metadata = sqlalchemy.MetaData()
             metadata.reflect(sqlalchemy.create_engine(str(settings.DATABASE)))
-            self._tables = metadata.tables
+            self._tables = {
+                n: metadata.tables[meta.table] for n, meta in self.config.models.items()
+            }
         return self._tables[name]
 
     def storage(self):

@@ -7,19 +7,21 @@
                 <div class="columns">
                     {% for item in results[sub:sub + size] %}
                     <div class="column ">
-                        <div class="box">
-                            <div class="columns">
-                                <div class="column is-center">
-                                    <span class="icon">
-                                        <i class="fa fa-{{ item.icon }} fa-3x has-paddingx"></i>
-                                    </span>
-                                </div>
-                                <div class="column">
-                                    <h6 class="title is-6 has-text-centered has-padding">{{ item.name|capitalize }}</h6>
-                                    <h2 class="title is-2 has-text-centered has-padding">{{ item.count }}</h2>
+                        <a href="{{ item.path }}">
+                            <div class="box">
+                                <div class="columns">
+                                    <div class="column is-center">
+                                        <span class="icon">
+                                            <i class="fa fa-{{ item.icon }} fa-3x has-paddingx"></i>
+                                        </span>
+                                    </div>
+                                    <div class="column">
+                                        <h6 class="title is-6 has-text-centered has-padding">{{ item.name|capitalize }}</h6>
+                                        <h2 class="title is-2 has-text-centered has-padding">{{ item.count }}</h2>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     {% endfor %}
                 </div>

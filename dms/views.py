@@ -33,15 +33,16 @@ class View(HTTPEndpoint):
             **(context or {}),
             **{
                 "menu": {
+                    "is_open": request.cookies.get("menu") != "0",
                     "entries": [
                         {
                             "name": model.meta.name,
-                            "path": f"/{mn}/",
-                            "active": model.meta.name == mn,
+                            "path": f"/{name}/",
+                            "active": model.name == getattr(self, "name", 0),
                             "icon": model.meta.icon,
                         }
-                        for mn, model in state.items.models().items()
-                    ]
+                        for name, model in state.items.models().items()
+                    ],
                 },
                 "messages": messages.get(request=request),
                 "ui": {
@@ -62,7 +63,7 @@ class Dashboard(View):
 
     def process(self, record: RowProxy) -> dict:
         data = dict(record._row)
-        result = {}
+        result = {"_pk": str(data[self.schema.pk.name])}
         for name, field in self.schema.fields.items():
             value = data[name]
             result[name] = {**field.to_dict(), **{"value": value}}
@@ -102,7 +103,8 @@ class Dashboard(View):
                 "name": self.name,
                 "model": self.model.meta.name,
                 "icon": self.model.meta.icon,
-                "fields": tuple(self.schema.fields),
+                "fields": self.schema.field_names,
+                "fields_in_list": self.model.meta.list_display,
                 "errors": {},
                 "path_params": {"id": request.path_params.get("id")},
                 "query_params": {"l": limit, "p": page, "q": query, "s": sort},
@@ -192,7 +194,8 @@ class Index(View):
         for name, model in state.items.models().items():
             results.append(
                 {
-                    "name": name,
+                    "name": model.meta.name,
+                    "path": f"/{name}/",
                     "icon": model.meta.icon,
                     "count": await model.objects.select().count(),
                 }

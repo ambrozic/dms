@@ -150,7 +150,7 @@ class Model:
 
     @property
     def objects(self) -> Objects:
-        return Objects(name=self.meta.table)
+        return Objects(name=self.name)
 
     def __repr__(self) -> str:
         return self.__str__()

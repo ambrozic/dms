@@ -109,7 +109,7 @@
                                                     {% endfor %}
                                                 </ul>
                                             </div>
-                                            {% elif obj.type == "text" %}
+                                            {% elif obj.type in "text" %}
                                             <div class="control">
                                                 <textarea
                                                     class="textarea{{ [" is-danger", ""][is_valid] }}"
@@ -117,6 +117,15 @@
                                                     name="{{ field }}"
                                                     {{ ["", " disabled"][obj.is_readonly] }}
                                                 >{{ obj.value|to_empty }}</textarea>
+                                            </div>
+                                            {% elif obj.type in "json" %}
+                                            <div class="control">
+                                                <textarea
+                                                    class="textarea{{ [" is-danger", ""][is_valid] }}"
+                                                    placeholder="{{ field }}"
+                                                    name="{{ field }}"
+                                                    {{ ["", " disabled"][obj.is_readonly] }}
+                                                >{{ obj.value|to_json|to_empty }}</textarea>
                                             </div>
                                             {% else %}
                                             <div class="control has-icons-right">
@@ -126,7 +135,7 @@
                                                     placeholder=""
                                                     maxlength="{{ obj.max_length|to_empty }}"
                                                     name="{{ field }}"
-                                                    value="{{ obj.value|to_json|to_empty if obj.type == "json" else obj.value|to_empty }}"
+                                                    value="{{ obj.value|to_empty }}"
                                                     {{ ["", " disabled"][obj.is_readonly] }}
                                                 />
                                                 <span class="icon is-right">
