@@ -26,7 +26,7 @@ Simple docker compose configuration
 ```
 services:
   dms:
-    image: ambrozic/dms:0.0.1
+    image: ambrozic/dms:latest
     ports:
       - "8000:8000"
     volumes:
@@ -40,4 +40,4 @@ services:
 and open `http://0.0.0.0:8000`
 
 ## Screenshots
-[here](docs/ss.png)
+[here](https://raw.githubusercontent.com/ambrozic/dms/master/docs/ss.png)

@@ -118,7 +118,7 @@
                                                     {{ ["", " disabled"][obj.is_readonly] }}
                                                 >{{ obj.value|to_empty }}</textarea>
                                             </div>
-                                            {% elif obj.type in "json" %}
+                                            {% elif obj.type in ["json", "jsonb"] %}
                                             <div class="control">
                                                 <textarea
                                                     class="textarea{{ [" is-danger", ""][is_valid] }}"

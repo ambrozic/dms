@@ -14,7 +14,7 @@ build:
 	pip install --upgrade pip setuptools wheel && pip install -e .[postgresql,sqlite,tests,docs]
 
 serve:
-	uvicorn dms.app:app --debug
+	uvicorn dms.app:app --debug --host=$(or ${HOST},localhost) --port=$(or ${PORT},7000)
 
 lint:
 	isort --check-only --recursive --line-width=90 --multi-line=3 --combine-as --trailing-comma .

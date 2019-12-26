@@ -36,7 +36,7 @@ class Form:
                 data[fn] = value
 
             # convert json string to dict
-            if type_ == "json":
+            if type_ in ["json", "jsonb"]:
                 value = json.loads(value) if value else {}
 
             # convert None array value to empty list
