@@ -39,7 +39,7 @@ setup(
         "python-multipart==0.0.5",
         "sqlalchemy==1.3.12",
         "starlette==0.13.0",
-        "uvicorn==0.11.1",
+        "uvicorn==0.11.7",
     ],
     extras_require={
         "postgresql": ["asyncpg==0.20.0", "psycopg2-binary==2.8.4"],
