@@ -34,7 +34,7 @@ setup(
     install_requires=[
         "databases==0.2.6",
         "itsdangerous==1.1.0",
-        "jinja2==2.10.3",
+        "jinja2==2.11.3",
         "passlib==1.7.2",
         "python-multipart==0.0.5",
         "sqlalchemy==1.3.12",
